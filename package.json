@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "cross-env NODE_ENV=staging nodemon index",
+    "production": "cross-env NODE_ENV=production nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,5 +19,8 @@
     "eslint-plugin-import": "2.25.2",
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.8.2"
+  },
+  "dependencies": {
+    "cross-env": "^10.1.0"
   }
 }
