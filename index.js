@@ -9,9 +9,16 @@
 const http = require('http');
 const { handleReqRes } = require('./helpers/handleReqRes');
 const enviorment = require('./helpers/enviroment');
+const data = require('./lib/data');
 
 // app object - module scaffolding
 const app = {};
+//testing file system
+// @TODO remove this test code
+data.create('test', 'newFile', { 'name': 'Ashad', 'age': 30, 'city': 'Dhaka' }, (err) => {
+    console.log('This was the error: ', err);       
+});
+
 
 // create a server
 app.createServer = () => {
