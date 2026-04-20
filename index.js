@@ -13,12 +13,18 @@ const data = require('./lib/data');
 
 // app object - module scaffolding
 const app = {};
-//testing file system
+// testing file system
 // @TODO remove this test code
-data.create('test', 'newFile', { 'name': 'Ashad', 'age': 30, 'city': 'Dhaka' }, (err) => {
-    console.log('This was the error: ', err);       
-});
+// data.create('test', 'newFile', {name: "ashad", age: 30, city: "Dhaka",country: "Bangladesh"
+// }, (err) => {
+//   console.log('this was the error', err);
+// });
 
+// read data
+data.read('test', 'newFile', (err, data2) => {
+    console.log('this was the error', err);
+    console.log('this was the data', data2);
+});
 
 // create a server
 app.createServer = () => {
