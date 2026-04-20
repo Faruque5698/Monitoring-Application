@@ -21,6 +21,15 @@ const app = {};
 // });
 
 // read data
+// data.read('test', 'newFile', (err, data2) => {
+//     console.log('this was the error', err);
+//     console.log('this was the data', data2);
+// });
+
+data.update('test', 'newFile', { name: "Kinag", age: 454, city: "Delhi", country: "India", profession: "Engineer" }, (err) => {
+    console.log('this was the error', err);
+});
+
 data.read('test', 'newFile', (err, data2) => {
     console.log('this was the error', err);
     console.log('this was the data', data2);
