@@ -152,10 +152,6 @@ handler._users.put = (requestProperties, callback) => {
         requestProperties.body.password.trim().length > 0
             ? requestProperties.body.password
             : false;
-    const tosAgreement = !!(
-        typeof requestProperties.body.tosAgreement === 'boolean' &&
-        requestProperties.body.tosAgreement === true
-    );
 
     const errors = {};
 
@@ -216,7 +212,30 @@ handler._users.put = (requestProperties, callback) => {
     }
 };
 
-handler._users.delete = (requestProperties, callback) => {};
+handler._users.delete = (requestProperties, callback) => {
+    const phone =
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length === 11
+            ? requestProperties.queryStringObject.phone
+            : false;
+    if (phone) {
+        data.delete('users', phone, (err) => {
+            if (!err) {
+                callback(200, {
+                    message: 'User was deleted successfully',
+                });
+            } else {
+                callback(500, {
+                    error: 'Could not delete the user',
+                });
+            }
+        });
+    } else {
+        callback(400, {
+            error: 'Phone number is invalid',
+        });
+    }
+};
 
 // export the module
 module.exports = handler;
