@@ -1,6 +1,7 @@
 // dependencies
 const data = require('../../lib/data');
 const { hash } = require('../../helpers/utilities');
+const { parseJsonToObject } = require('../../helpers/utilities');
 
 // module scaffolding
 const handler = {};
@@ -105,11 +106,30 @@ handler._users.post = (requestProperties, callback) => {
 };
 
 handler._users.get = (requestProperties, callback) => {
-    callback(200, {
-        name: 'Ashaduzzaman Faruque',
-        age: 30,
-        profession: 'Software Engineer',
-    });
+    // check the phone number is valid
+    const phone =
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length === 11
+            ? requestProperties.queryStringObject.phone
+            : false;
+    if (phone) {
+        // look up the user
+        data.read('users', phone, (err, userData) => {
+            if (!err && userData) {
+                const user = { ...parseJsonToObject(userData) };
+                delete user.password;
+                callback(200, user);
+            } else {
+                callback(404, {
+                    error: 'User not found',
+                });
+            }
+        });
+    } else {
+        callback(404, {
+            error: 'Phone number is invalid',
+        });
+    }
 };
 
 handler._users.put = (requestProperties, callback) => {};
