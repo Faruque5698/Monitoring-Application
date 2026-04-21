@@ -21,7 +21,6 @@ handler.userHandler = (requestProperties, callback) => {
 handler._users = {};
 
 handler._users.post = (requestProperties, callback) => {
-    console.log(requestProperties.body);
     const firstName =
         typeof requestProperties.body.firstName === 'string' &&
         requestProperties.body.firstName.trim().length > 0
@@ -132,7 +131,90 @@ handler._users.get = (requestProperties, callback) => {
     }
 };
 
-handler._users.put = (requestProperties, callback) => {};
+handler._users.put = (requestProperties, callback) => {
+    const firstName =
+        typeof requestProperties.body.firstName === 'string' &&
+        requestProperties.body.firstName.trim().length > 0
+            ? requestProperties.body.firstName
+            : false;
+    const lastName =
+        typeof requestProperties.body.lastName === 'string' &&
+        requestProperties.body.lastName.trim().length > 0
+            ? requestProperties.body.lastName
+            : false;
+    const phone =
+        typeof requestProperties.body.phone === 'string' &&
+        requestProperties.body.phone.trim().length === 11
+            ? requestProperties.body.phone
+            : false;
+    const password =
+        typeof requestProperties.body.password === 'string' &&
+        requestProperties.body.password.trim().length > 0
+            ? requestProperties.body.password
+            : false;
+    const tosAgreement = !!(
+        typeof requestProperties.body.tosAgreement === 'boolean' &&
+        requestProperties.body.tosAgreement === true
+    );
+
+    const errors = {};
+
+    if (!firstName) {
+        errors.firstName = 'First name is required';
+    }
+
+    if (!lastName) {
+        errors.lastName = 'Last name is required';
+    }
+
+    if (!phone) {
+        errors.phone = 'Phone must be exactly 11 digits';
+    }
+
+    if (!password) {
+        errors.password = 'Password is required';
+    }
+
+    if (phone) {
+        if (firstName || lastName || password) {
+            // look up the user
+            data.read('users', phone, (err, userData) => {
+                if (!err && userData) {
+                    const userObject = { ...parseJsonToObject(userData) };
+                    if (firstName) {
+                        userObject.firstName = firstName;
+                    }
+                    if (lastName) {
+                        userObject.lastName = lastName;
+                    }
+                    if (password) {
+                        userObject.password = hash(password);
+                    }
+                    // store the updated user to db
+                    data.update('users', phone, userObject, (err2) => {
+                        if (!err2) {
+                            callback(200, {
+                                message: 'User was updated successfully',
+                            });
+                        } else {
+                            callback(500, {
+                                error: 'Could not update the user',
+                            });
+                        }
+                    });
+                } else {
+                    callback(404, {
+                        error: 'User not found',
+                    });
+                }
+            });
+        }
+    } else {
+        callback(400, {
+            error: errors,
+        });
+    }
+};
 
 handler._users.delete = (requestProperties, callback) => {};
 
