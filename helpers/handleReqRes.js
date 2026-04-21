@@ -53,8 +53,6 @@ handler.handleReqRes = (req, res) => {
             res.writeHead(statusCode);
             res.end(payloadString);
         });
-
-        res.end(`Hello World! My name is Ashaduzzaman Faruque.`);
     });
 
     // request handler logic
