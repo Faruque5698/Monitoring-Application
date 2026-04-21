@@ -5,23 +5,23 @@
  * Date: 15-04-2026
  */
 // Dependencies
-const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const routes = require('../routes');
 const { notFoundHandler } = require('../handlers/routeHandlers/notFoundHandler');
+const { parseJsonToObject } = require('./utilities');
 
 // module scaffolding
 const handler = {};
 handler.handleReqRes = (req, res) => {
     // request handling
     // get the url and parse it
-    const parsedUrl = url.parse(req.url, true);
+    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, '');
     // method get, post, put, delete
     const method = req.method.toLowerCase();
     // parameters or query string
-    const queryStringObject = parsedUrl.query;
+    const queryStringObject = Object.fromEntries(parsedUrl.searchParams);
     // headers object
     const headersObject = req.headers;
 
@@ -42,9 +42,8 @@ handler.handleReqRes = (req, res) => {
         realData += decoder.write(buffer);
     });
     req.on('end', () => {
-        realData += decoder.end();
-        console.log('decoded data: ', realData);
-
+        realData += decoder.end(); // string
+        requestProperties.body = parseJsonToObject(realData); // parse to object
         chosenHandler(requestProperties, (statusCode, payload) => {
             statusCode = typeof statusCode === 'number' ? statusCode : 500;
             payload = typeof payload === 'object' ? payload : {};
@@ -53,8 +52,6 @@ handler.handleReqRes = (req, res) => {
             res.writeHead(statusCode);
             res.end(payloadString);
         });
-
-        res.end(`Hello World! My name is Ashaduzzaman Faruque.`);
     });
 
     // request handler logic

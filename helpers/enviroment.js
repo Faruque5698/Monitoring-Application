@@ -16,9 +16,7 @@ enviorments.production = {
 const currentEnv = typeof process.env.NODE_ENV === 'string' ? process.env.NODE_ENV : 'staging';
 
 // export corresponding env
-const enviormentToExport = typeof enviorments[currentEnv] === 'object' 
-  ? enviorments[currentEnv] 
-  : enviorments.staging;
-
+const enviormentToExport =
+    typeof enviorments[currentEnv] === 'object' ? enviorments[currentEnv] : enviorments.staging;
 
 module.exports = enviormentToExport;
