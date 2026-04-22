@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "cross-env NODE_ENV=staging nodemon --legacy-watch index",
     "start": "cross-env NODE_ENV=staging nodemon index",
     "production": "cross-env NODE_ENV=production nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +22,7 @@
     "prettier": "^3.8.2"
   },
   "dependencies": {
-    "cross-env": "^10.1.0"
+    "cross-env": "^10.1.0",
+    "nodemon": "^3.1.14"
   }
 }
